@@ -1741,6 +1741,29 @@ const AdminRight = () => {
   // };
 
 
+  const [toastMessage, setToastMessage] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    // Case 1: Saved flag
+    if (params.get("saved") === "true") {
+      setToastMessage("✅ Video downloaded!");
+    }
+
+    // Case 2: Message string (optional if you pass messages)
+    if (params.get("message")) {
+      setToastMessage(params.get("message"));
+    }
+
+    // Auto-hide after 4s
+    if (params.get("saved") === "true" || params.get("message")) {
+      setTimeout(() => setToastMessage(""), 4000);
+    }
+  }, []);
+
+
+
   const parseTextWithFormulas = (texts) => {
     if (!texts) return;
     const text = texts.replace(/\\\\/g, "\\")
@@ -2272,16 +2295,44 @@ const AdminRight = () => {
   </div>
 )} */}
 
-                <button
-                  className="generate-button"
-                  onClick={() => {
-                    window.location.href = "https://jazzy-sfogliatella-c80115.netlify.app/";
-                  }}
-                >
-                  Generate AI Video
-                </button>
+                <div>
+                  {toastMessage && (
+                    <div
+                      style={{
+                        position: "fixed",
+                        top: "20px",
+                        right: "20px",
+                        backgroundColor: "#4caf50",
+                        color: "white",
+                        padding: "12px 20px",
+                        borderRadius: "8px",
+                        boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
+                        zIndex: 9999,
+                        fontWeight: "bold",
+                        transition: "opacity 0.5s ease-in-out"
+                      }}
+                    >
+                      {toastMessage}
+                    </div>
+                  )}
 
+                  <button
+                    className="generate-button"
+                    onClick={() => {
+                      const currentPage = window.location.href; // 👈 capture exact React page
+                      const url = `https://majestic-frangollo-031fed.netlify.app/?subtopic=${encodeURIComponent(
+                        subTitle
+                      )}&description=${encodeURIComponent(subDesc)}&returnTo=${encodeURIComponent(
+                        currentPage
+                      )}`;
 
+                      window.location.href = url;
+                    }}
+                  >
+                    Generate AI Video
+                  </button>
+
+                </div>
 
                 <div className="action-buttons">
                   <button
