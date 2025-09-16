@@ -2321,7 +2321,7 @@ const AdminRight = () => {
                     onClick={() => {
                       const currentPage = window.location.href; // 👈 capture exact React page
                       const url = `https://majestic-frangollo-031fed.netlify.app/?subtopic=${encodeURIComponent(
-                        subTitle
+                        subtopic._id
                       )}&description=${encodeURIComponent(subDesc)}&returnTo=${encodeURIComponent(
                         currentPage
                       )}`;
