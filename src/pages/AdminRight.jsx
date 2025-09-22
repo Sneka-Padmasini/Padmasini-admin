@@ -4,8 +4,6 @@ import { Pencil, Trash2 } from 'lucide-react';
 import katex from 'katex';
 import parse from 'html-react-parser';
 import 'katex/dist/katex.min.css';
-
-
 import './AdminRight.css';
 const AdminRight = () => {
   const navigate = useNavigate();
@@ -441,8 +439,6 @@ const AdminRight = () => {
       return sub;
     });
   };
-
-
   const handleEditSubtopic = (unit, index) => {
     const sub = lessonSubtopicsMap[unit][index];
     setSubTitle(sub.title);
@@ -534,11 +530,6 @@ const AdminRight = () => {
 
     setEditingQuestionIndex(index);
   };
-
-
-
-
-
   const resetExplanationForm = () => {
     setShowExplanationForm(false)
     setSubTitle('');
@@ -1051,17 +1042,67 @@ const AdminRight = () => {
     setShowTestForm(false);
   };
   const currentUnits = standards.length > 0 ? unitsMap[selectedStandard] || [] : unitsMap.default || [];
+  // const renderSubtopicsRecursive = (subtopics, depth = 0) => {
+  //   return subtopics.map((sub, idx) => (
+  //     <li key={`${sub.title}-${idx}`} style={{ marginTop: '5px', marginLeft: `${depth * 10}px` }}>
+  //       <span
+  //         onClick={() => setSelectedSubtopic(sub)}
+  //         style={{ cursor: 'pointer' }}
+  //       >
+  //         📘 {sub.title}
+  //       </span>
+  //       {sub.children && sub.children.length > 0 && (
+  //         <ul style={{ marginLeft: '15px' }}>
+  //           {renderSubtopicsRecursive(sub.children, depth + 1)}
+  //         </ul>
+  //       )}
+  //     </li>
+  //   ));
+  // };
+  // Recursive subtopic rendering
   const renderSubtopicsRecursive = (subtopics, depth = 0) => {
     return subtopics.map((sub, idx) => (
-      <li key={`${sub.title}-${idx}`} style={{ marginTop: '5px', marginLeft: `${depth * 10}px` }}>
+      <li
+        key={`${sub.title}-${idx}`}
+        style={{ marginTop: "5px", marginLeft: `${depth * 10}px` }}
+      >
+        {/* <span
+          onClick={() => {
+            console.log("Clicked subtopic:", sub); // debug
+            setSelectedSubtopic(sub);
+          }}
+          style={{
+            cursor: "pointer",
+            backgroundColor:
+              selectedSubtopic?._id === sub._id ? "#dcedc8" : "transparent",
+            padding: "2px 4px",
+            borderRadius: "4px",
+          }}
+        >
+          📘 {sub.title}
+        </span> */}
         <span
-          onClick={() => setSelectedSubtopic(sub)}
-          style={{ cursor: 'pointer' }}
+          onClick={() => {
+            console.log("Clicked subtopic:", sub);
+            if (sub._id) {                   // Only select valid leaf nodes
+              setSelectedSubtopic(sub);
+              console.log("Selected subtopic:", sub);
+            }
+          }}
+          style={{
+            cursor: sub._id ? "pointer" : "default",
+            backgroundColor: selectedSubtopic?._id === sub._id ? "#dcedc8" : "transparent",
+            padding: "2px 4px",
+            borderRadius: "4px",
+          }}
         >
           📘 {sub.title}
         </span>
+
+
+
         {sub.children && sub.children.length > 0 && (
-          <ul style={{ marginLeft: '15px' }}>
+          <ul style={{ marginLeft: "15px" }}>
             {renderSubtopicsRecursive(sub.children, depth + 1)}
           </ul>
         )}
@@ -1132,7 +1173,7 @@ const AdminRight = () => {
     // console.log("Selected Unit:", unit);
     //console.log("Unit Path:", path); // use directly
     setSelectedUnit(path);           // optional if needed elsewhere
-    setSelectedSubtopic(null);
+    // setSelectedSubtopic(null);
     setSelectedTest(null);
   };
 
@@ -1545,29 +1586,61 @@ const AdminRight = () => {
   const [unitPath, setUnitPath] = useState('');
 
 
+  // const handleUnitClick = (unit, path) => {
+  //   if (!selectedSubTopicUnitAudio) { console.log("no audio file bro") }
+  //   setSelectedSubTopicUnitAudio([]);
+  //   setRecordedVoiceFiles([])
+  //   setUploadedVoiceFiles([])
+
+  //   setSelectedSubTopicUnit(unit)
+
+  //   const rootId = findRootOfUnit(unit.id, unitData); // Find root
+  //   setFirstClicked(rootId); // Set first clicked as root of last
+  //   setLastClicked(unit.id); // Last clicked as this unit
+  //   //setKnowSubUnit(unit.unitName)
+  //   //console.log('unit id',unit.unitName)
+  //   toggleExpand(path);
+
+  //   //setSelectedSubTopicUnitAudio(unit.audioFileId)
+  //   unitSelection(unit, path)  // pass path directly
+  //   //console.log("Rendering audios:", selectedSubTopicUnitAudio);
+
+  //   //setSelectedSubTopicUnit(unit)
+  //   // console.log("Clicked Path:", path);
+  //   setUnitPath(path);
+  //   if (!unit.standard) setSelectedSubUnit(unit)
+  //   const newAudioIds = Array.isArray(unit.audioFileId)
+  //     ? unit.audioFileId
+  //     : unit.audioFileId
+  //       ? [unit.audioFileId]
+  //       : [];
+
+  //   setTimeout(() => {
+  //     setSelectedSubTopicUnitAudio(newAudioIds);
+  //     console.log("✅ Updated audio to:", newAudioIds);
+  //     //console.log(newAudioIds.name)
+  //   }, 0);
+  // };
   const handleUnitClick = (unit, path) => {
+    // Reset previous subtopic selection
+    // setSelectedSubtopic(null);
+
     if (!selectedSubTopicUnitAudio) { console.log("no audio file bro") }
     setSelectedSubTopicUnitAudio([]);
-    setRecordedVoiceFiles([])
-    setUploadedVoiceFiles([])
+    setRecordedVoiceFiles([]);
+    setUploadedVoiceFiles([]);
 
-    setSelectedSubTopicUnit(unit)
+    setSelectedSubTopicUnit(unit);
 
     const rootId = findRootOfUnit(unit.id, unitData); // Find root
     setFirstClicked(rootId); // Set first clicked as root of last
     setLastClicked(unit.id); // Last clicked as this unit
-    //setKnowSubUnit(unit.unitName)
-    //console.log('unit id',unit.unitName)
     toggleExpand(path);
 
-    //setSelectedSubTopicUnitAudio(unit.audioFileId)
-    unitSelection(unit, path)  // pass path directly
-    //console.log("Rendering audios:", selectedSubTopicUnitAudio);
-
-    //setSelectedSubTopicUnit(unit)
-    // console.log("Clicked Path:", path);
+    unitSelection(unit, path);  // pass path directly
     setUnitPath(path);
-    if (!unit.standard) setSelectedSubUnit(unit)
+    if (!unit.standard) setSelectedSubUnit(unit);
+
     const newAudioIds = Array.isArray(unit.audioFileId)
       ? unit.audioFileId
       : unit.audioFileId
@@ -1577,9 +1650,10 @@ const AdminRight = () => {
     setTimeout(() => {
       setSelectedSubTopicUnitAudio(newAudioIds);
       console.log("✅ Updated audio to:", newAudioIds);
-      //console.log(newAudioIds.name)
     }, 0);
   };
+
+
   const toggleExpand = (id) => {
     setExpandedUnits((prev) => ({
       ...prev,
@@ -2295,7 +2369,7 @@ const AdminRight = () => {
   </div>
 )} */}
 
-                <div>
+                {/* <div>
                   {toastMessage && (
                     <div
                       style={{
@@ -2321,7 +2395,7 @@ const AdminRight = () => {
                     onClick={() => {
                       const currentPage = window.location.href; // 👈 capture exact React page
                       const url = `https://majestic-frangollo-031fed.netlify.app/?subtopic=${encodeURIComponent(
-                        subtopic._id
+                        subTitle
                       )}&description=${encodeURIComponent(subDesc)}&returnTo=${encodeURIComponent(
                         currentPage
                       )}`;
@@ -2332,7 +2406,64 @@ const AdminRight = () => {
                     Generate AI Video
                   </button>
 
+                </div> */}
+
+                <div>
+                  {/* Toast Notification */}
+                  {toastMessage && (
+                    <div
+                      style={{
+                        position: "fixed",
+                        top: "20px",
+                        right: "20px",
+                        backgroundColor: "#4caf50",
+                        color: "white",
+                        padding: "12px 20px",
+                        borderRadius: "8px",
+                        boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
+                        zIndex: 9999,
+                        fontWeight: "bold",
+                        transition: "opacity 0.5s ease-in-out",
+                      }}
+                    >
+                      {toastMessage}
+                    </div>
+                  )}
+
+                  {/* Render Subtopics for the selected unit */}
+                  {selectedUnit && lessonSubtopicsMap[selectedUnit]?.length > 0 && (
+                    <ul style={{ marginLeft: "20px", marginTop: "5px", color: "blue" }}>
+                      {renderSubtopicsRecursive(lessonSubtopicsMap[selectedUnit])}
+                    </ul>
+                  )}
+
+                  {/* Generate AI Video Button */}
+                  <button
+                    className="generate-button"
+                    onClick={() => {
+                      if (!selectedSubtopic?._id) {
+                        return alert("Please select a subtopic first."); // only alert if null or invalid
+                      }
+
+                      const currentPage = window.location.href;
+                      const url = `https://majestic-frangollo-031fed.netlify.app/?subtopicId=${encodeURIComponent(
+                        selectedSubtopic._id
+                      )}&subtopicName=${encodeURIComponent(
+                        selectedSubtopic.title
+                      )}&description=${encodeURIComponent(
+                        selectedSubtopic.description || ""
+                      )}&returnTo=${encodeURIComponent(currentPage)}`;
+
+                      window.location.href = url;
+                    }}
+                  >
+                    Generate AI Video
+                  </button>
+
+
+
                 </div>
+
 
                 <div className="action-buttons">
                   <button
